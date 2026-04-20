@@ -245,6 +245,10 @@ export default function Contact() {
               >
                 {sending ? 'Sending...' : 'Send my request'}
               </button>
+              <p className='text-[10px] text-[#6B0F1A]/35 leading-relaxed mt-2'>
+                Your information is used only to respond to your enquiry and
+                will never be shared.
+              </p>
             </form>
           )}
         </div>
