@@ -20,7 +20,12 @@ const contact = [
 
 export default function Footer() {
   return (
-    <footer className='bg-[#FAFAF8] border-t border-[#6B0F1A]/10'>
+    <footer
+      style={{
+        background: '#0a0103',
+        borderTop: '1px solid rgba(245,230,200,0.07)',
+      }}
+    >
       <div className='max-w-6xl mx-auto px-6 md:px-16 py-16 grid grid-cols-1 md:grid-cols-3 gap-12'>
         {/* Brand */}
         <div className='flex flex-col gap-5'>
@@ -28,22 +33,26 @@ export default function Footer() {
             <Image
               src='/logo.jpeg'
               alt='Mystery Meals'
-              width={44}
-              height={44}
-              className='rounded-full'
+              width={40}
+              height={40}
+              className='rounded-full opacity-80'
             />
-            <span className='text-sm font-medium text-[#6B0F1A]'>
+            <span className='text-sm font-medium text-[#F5E6C8]/60'>
               Mystery Meals
             </span>
           </Link>
-          <p className='text-sm text-[#6B0F1A]/50 leading-relaxed max-w-xs'>
+          <p
+            className='text-sm leading-relaxed max-w-xs'
+            style={{ color: 'rgba(245,230,200,0.3)' }}
+          >
             Premium catering services for all occasions in Milton, Ontario.
           </p>
           <a
             href='https://www.instagram.com/mystery__meals/'
             target='_blank'
             rel='noopener noreferrer'
-            className='text-xs uppercase tracking-[0.15em] text-[#6B0F1A]/40 hover:text-[#6B0F1A] transition-colors'
+            className='text-[11px] uppercase tracking-[0.15em] transition-colors'
+            style={{ color: 'rgba(245,230,200,0.25)' }}
           >
             @mystery__meals ↗
           </a>
@@ -51,7 +60,10 @@ export default function Footer() {
 
         {/* Links */}
         <div>
-          <p className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/30 mb-6'>
+          <p
+            className='text-[11px] uppercase tracking-[0.2em] mb-6'
+            style={{ color: 'rgba(245,230,200,0.2)' }}
+          >
             Pages
           </p>
           <ul className='flex flex-col gap-3'>
@@ -59,7 +71,8 @@ export default function Footer() {
               <li key={href}>
                 <Link
                   href={href}
-                  className='text-sm text-[#6B0F1A]/50 hover:text-[#6B0F1A] transition-colors'
+                  className='text-sm transition-colors'
+                  style={{ color: 'rgba(245,230,200,0.35)' }}
                 >
                   {label}
                 </Link>
@@ -70,7 +83,10 @@ export default function Footer() {
 
         {/* Contact */}
         <div>
-          <p className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/30 mb-6'>
+          <p
+            className='text-[11px] uppercase tracking-[0.2em] mb-6'
+            style={{ color: 'rgba(245,230,200,0.2)' }}
+          >
             Contact
           </p>
           <ul className='flex flex-col gap-3'>
@@ -79,12 +95,18 @@ export default function Footer() {
                 {href ? (
                   <a
                     href={href}
-                    className='text-sm text-[#6B0F1A]/50 hover:text-[#6B0F1A] transition-colors'
+                    className='text-sm transition-colors'
+                    style={{ color: 'rgba(245,230,200,0.35)' }}
                   >
                     {label}
                   </a>
                 ) : (
-                  <span className='text-sm text-[#6B0F1A]/50'>{label}</span>
+                  <span
+                    className='text-sm'
+                    style={{ color: 'rgba(245,230,200,0.35)' }}
+                  >
+                    {label}
+                  </span>
                 )}
               </li>
             ))}
@@ -92,12 +114,16 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom bar */}
-      <div className='border-t border-[#6B0F1A]/10 px-6 md:px-16 py-5 flex flex-col md:flex-row items-center justify-between gap-2'>
-        <p className='text-[11px] text-[#6B0F1A]/30'>
+      <div
+        className='px-6 md:px-16 py-5 flex flex-col md:flex-row items-center justify-between gap-2'
+        style={{ borderTop: '1px solid rgba(245,230,200,0.06)' }}
+      >
+        <p className='text-[11px]' style={{ color: 'rgba(245,230,200,0.18)' }}>
           © {new Date().getFullYear()} Mystery Meals. All rights reserved.
         </p>
-        <p className='text-[11px] text-[#6B0F1A]/30'>Milton, Ontario</p>
+        <p className='text-[11px]' style={{ color: 'rgba(245,230,200,0.18)' }}>
+          Milton, Ontario
+        </p>
       </div>
     </footer>
   )
