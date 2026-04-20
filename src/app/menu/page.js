@@ -2,7 +2,11 @@
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
-// ── easy edit — add/remove/rename sections and items ──────
+const serif = { fontFamily: "'Cormorant Garamond', serif", fontWeight: 300 }
+const LABEL_DARK = 'text-[11px] uppercase tracking-[0.22em] text-[#F5E6C8]/30'
+const LABEL_LIGHT = 'text-[11px] uppercase tracking-[0.22em] text-[#6B0F1A]/35'
+const border = { borderBottom: '1px solid rgba(245,230,200,0.07)' }
+
 const MENU_SECTIONS = [
   {
     category: 'Artisan Welcome',
@@ -80,7 +84,6 @@ const SIGNATURE = {
   heading: 'Our signature samosas.',
   desc: 'Handcrafted with love, our signature samosas are a crowd favourite at every event. Available in various fillings, perfectly crispy on the outside and bursting with flavour inside.',
 }
-// ──────────────────────────────────────────────────────────
 
 function useInView() {
   const ref = useRef(null)
@@ -90,7 +93,7 @@ function useInView() {
       ([e]) => {
         if (e.isIntersecting) setInView(true)
       },
-      { threshold: 0.1 },
+      { threshold: 0.08 },
     )
     if (ref.current) observer.observe(ref.current)
     return () => observer.disconnect()
@@ -100,36 +103,36 @@ function useInView() {
 
 const tagStyle = (tag) =>
   tag === 'Halal'
-    ? 'bg-green-50 text-green-700 border border-green-200'
-    : 'bg-[#6B0F1A]/5 text-[#6B0F1A] border border-[#6B0F1A]/15'
+    ? 'text-[10px] uppercase tracking-[0.1em] px-2.5 py-0.5 rounded-full bg-green-900/40 text-green-400 border border-green-800/50'
+    : 'text-[10px] uppercase tracking-[0.1em] px-2.5 py-0.5 rounded-full border'
 
 export default function Menu() {
   const [menuRef, menuInView] = useInView()
 
   return (
-    <div className='bg-[#FAFAF8] pt-20'>
-      {/* ── Hero ─────────────────────────────────────────── */}
-      <section className='px-6 md:px-16 py-24 border-b border-[#6B0F1A]/10'>
-        <p className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/40 mb-5'>
-          What we serve
-        </p>
-        <h1 className='text-4xl md:text-6xl font-light text-[#1a0408] leading-tight tracking-tight max-w-xl'>
-          Our <em style={{ fontFamily: 'Georgia, serif' }}>menu.</em>
+    <div className='pt-20' style={{ background: '#140308' }}>
+      {/* Hero */}
+      <section className='px-6 md:px-16 py-24' style={border}>
+        <p className={`${LABEL_DARK} mb-5`}>What we serve</p>
+        <h1 className='text-4xl md:text-6xl font-light text-[#F5E6C8] leading-tight tracking-tight max-w-xl'>
+          Our <em style={serif}>menu.</em>
         </h1>
-        <p className='text-base text-[#6B0F1A]/50 mt-6 max-w-xl leading-relaxed'>
+        <p className='text-base text-[#F5E6C8]/40 mt-6 max-w-xl leading-relaxed'>
           Fresh, delicious, and beautifully presented. Every dish is prepared
           with locally sourced ingredients on the day of your event.
         </p>
       </section>
 
-      {/* ── Customise note ───────────────────────────────── */}
-      <section className='px-6 md:px-16 py-8 border-b border-[#6B0F1A]/10 bg-[#6B0F1A]/[0.03]'>
-        <p className='text-sm text-[#6B0F1A]/60 leading-relaxed'>
-          All menus are fully customisable to suit your event, dietary
-          requirements, and preferences.{' '}
+      {/* Customise note */}
+      <section
+        className='px-6 md:px-16 py-6'
+        style={{ ...border, background: 'rgba(245,230,200,0.03)' }}
+      >
+        <p className='text-sm text-[#F5E6C8]/35 leading-relaxed'>
+          All menus are fully customisable.{' '}
           <Link
             href='/contact'
-            className='text-[#6B0F1A] underline underline-offset-2 hover:opacity-70 transition-opacity'
+            className='text-[#F5E6C8]/60 underline underline-offset-2 hover:text-[#F5E6C8]/80 transition-opacity'
           >
             Contact us
           </Link>{' '}
@@ -137,44 +140,51 @@ export default function Menu() {
         </p>
       </section>
 
-      {/* ── Menu sections ────────────────────────────────── */}
+      {/* Menu sections */}
       <section
         ref={menuRef}
-        className='px-6 md:px-16 py-24 border-b border-[#6B0F1A]/10'
+        className='px-6 md:px-16 py-24'
+        style={{ ...border, background: '#180306' }}
       >
-        <div className='max-w-3xl mx-auto flex flex-col divide-y divide-[#6B0F1A]/10'>
+        <div
+          className='max-w-3xl mx-auto flex flex-col'
+          style={{ divide: 'rgba(245,230,200,0.07)' }}
+        >
           {MENU_SECTIONS.map((section, i) => (
             <div
               key={i}
-              className={`py-10 transition-all duration-700 delay-${Math.min(i, 5) * 100} ${
-                menuInView
-                  ? 'opacity-100 translate-y-0'
-                  : 'opacity-0 translate-y-4'
-              }`}
+              className={`py-10 transition-all duration-700 delay-${Math.min(i, 5) * 100} ${menuInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}
+              style={{ borderBottom: '1px solid rgba(245,230,200,0.07)' }}
             >
-              <p className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/30 mb-6'>
-                {section.category}
-              </p>
-              <div className='flex flex-col gap-4'>
+              <p className={`${LABEL_DARK} mb-6`}>{section.category}</p>
+              <div className='flex flex-col gap-5'>
                 {section.items.map((item, j) => (
                   <div
                     key={j}
                     className='flex items-start justify-between gap-6'
                   >
                     <div className='flex-1'>
-                      <div className='flex items-center gap-3 mb-1 flex-wrap'>
-                        <h3 className='text-base font-medium text-[#1a0408]'>
+                      <div className='flex items-center gap-3 mb-1.5 flex-wrap'>
+                        <h3 className='text-base font-light text-[#F5E6C8]/90'>
                           {item.name}
                         </h3>
                         {item.tag && (
                           <span
-                            className={`text-[10px] uppercase tracking-[0.1em] px-2.5 py-0.5 rounded-full ${tagStyle(item.tag)}`}
+                            className={tagStyle(item.tag)}
+                            style={
+                              item.tag !== 'Halal'
+                                ? {
+                                    borderColor: 'rgba(245,230,200,0.15)',
+                                    color: 'rgba(245,230,200,0.4)',
+                                  }
+                                : {}
+                            }
                           >
                             {item.tag}
                           </span>
                         )}
                       </div>
-                      <p className='text-sm text-[#6B0F1A]/50 leading-relaxed'>
+                      <p className='text-sm text-[#F5E6C8]/30 leading-relaxed'>
                         {item.desc}
                       </p>
                     </div>
@@ -186,46 +196,43 @@ export default function Menu() {
         </div>
       </section>
 
-      {/* ── Signature samosas ────────────────────────────── */}
-      <section className='px-6 md:px-16 py-24 border-b border-[#6B0F1A]/10'>
+      {/* Signature samosas */}
+      <section className='px-6 md:px-16 py-24' style={border}>
         <div className='max-w-xl'>
-          <p className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/40 mb-5'>
-            Signature item
-          </p>
-          <h2 className='text-3xl md:text-4xl font-light text-[#1a0408] mb-6 tracking-tight'>
-            <em style={{ fontFamily: 'Georgia, serif' }}>
-              {SIGNATURE.heading}
-            </em>
+          <p className={`${LABEL_DARK} mb-5`}>Signature item</p>
+          <h2 className='text-3xl md:text-4xl font-light text-[#F5E6C8] mb-6 tracking-tight'>
+            <em style={serif}>{SIGNATURE.heading}</em>
           </h2>
-          <p className='text-sm text-[#6B0F1A]/60 leading-relaxed mb-8'>
+          <p className='text-sm text-[#F5E6C8]/40 leading-relaxed mb-8'>
             {SIGNATURE.desc}
           </p>
           <Link
             href='/contact'
-            className='inline-flex items-center gap-2 text-sm text-[#6B0F1A] font-medium border-b border-[#6B0F1A]/30 pb-0.5 hover:border-[#6B0F1A] transition-colors'
+            className='inline-flex items-center gap-2 text-sm text-[#F5E6C8]/60 font-medium border-b border-[#F5E6C8]/20 pb-0.5 hover:text-[#F5E6C8] hover:border-[#F5E6C8]/50 transition-colors'
           >
             Order for your event →
           </Link>
         </div>
       </section>
 
-      {/* ── CTA ──────────────────────────────────────────── */}
-      <section className='px-6 md:px-16 py-24 bg-[#6B0F1A]'>
+      {/* CTA — cream accent */}
+      <section
+        className='px-6 md:px-16 py-24'
+        style={{ background: '#F5E6C8' }}
+      >
         <div className='max-w-2xl'>
-          <p className='text-[11px] uppercase tracking-[0.2em] text-[#F5E6C8]/40 mb-6'>
-            Custom menus
-          </p>
-          <h2 className='text-4xl md:text-5xl font-light text-white leading-tight mb-6 tracking-tight'>
-            Want a{' '}
-            <em style={{ fontFamily: 'Georgia, serif' }}>custom menu?</em>
+          <p className={`${LABEL_LIGHT} mb-6`}>Custom menus</p>
+          <h2 className='text-4xl md:text-5xl font-light text-[#1a0408] leading-tight mb-6 tracking-tight'>
+            Want a <em style={serif}>custom menu?</em>
           </h2>
-          <p className='text-[#F5E6C8]/60 text-sm leading-relaxed mb-10 max-w-md'>
+          <p className='text-[#3a0508]/50 text-sm leading-relaxed mb-10 max-w-md'>
             We work with you to create a menu that perfectly fits your event,
             budget, and dietary needs.
           </p>
           <Link
             href='/contact'
-            className='bg-[#F5E6C8] text-[#6B0F1A] text-sm font-medium px-10 py-4 rounded-full hover:bg-white transition-colors inline-block'
+            className='text-sm font-medium px-10 py-4 rounded-full transition-colors inline-block text-[#F5E6C8]'
+            style={{ background: '#6B0F1A' }}
           >
             Get a free quote
           </Link>
