@@ -3,27 +3,14 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 
-function useInView() {
-  const ref = useRef(null)
-  const [inView, setInView] = useState(false)
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setInView(true)
-      },
-      { threshold: 0.15 }
-    )
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [])
-  return [ref, inView]
-}
-
-const services = [
+// ── easy edit ──────────────────────────────────────────────
+const SERVICES = [
   {
-    img: '/event.jpg',
-    title: 'Wedding Catering',
-    desc: 'Make your special day truly unforgettable. We provide elegant, customized catering for weddings of all sizes — from intimate ceremonies to grand receptions. Every dish is prepared fresh and presented beautifully.',
+    image: '/event.jpg', // swap image here
+    number: '01',
+    tag: 'Weddings & Events',
+    title: 'Wedding catering.',
+    desc: 'Make your special day truly unforgettable. We provide elegant, customised catering for weddings of all sizes — from intimate ceremonies to grand receptions. Every dish is prepared fresh and presented beautifully.',
     features: [
       'Custom menu planning',
       'Full setup & cleanup',
@@ -32,8 +19,10 @@ const services = [
     ],
   },
   {
-    img: '/corporate.jpg',
-    title: 'Corporate Events',
+    image: '/corporate.jpg', // swap image here
+    number: '02',
+    tag: 'Corporate',
+    title: 'Corporate events.',
     desc: "Impress your clients, partners, and team with professional catering that reflects your company's standards. We handle everything from boardroom lunches to large corporate galas.",
     features: [
       'Breakfast & lunch packages',
@@ -43,8 +32,10 @@ const services = [
     ],
   },
   {
-    img: '/chef.jpg',
-    title: 'Private Chef',
+    image: '/chef.jpg', // swap image here
+    number: '03',
+    tag: 'Private Chef',
+    title: 'Private chef service.',
     desc: 'Enjoy a restaurant-quality dining experience in the comfort of your own home. Our private chef service is perfect for dinner parties, date nights, or any special occasion.',
     features: [
       'In-home dining experience',
@@ -54,8 +45,10 @@ const services = [
     ],
   },
   {
-    img: '/menu.jpg',
-    title: 'Meal Prep',
+    image: '/menu.jpg', // swap image here
+    number: '04',
+    tag: 'Meal Prep',
+    title: 'Weekly meal prep.',
     desc: 'Stay on track with your health and lifestyle goals. We prepare fresh, delicious, and nutritious meals for the week so you can focus on what matters most.',
     features: [
       'Weekly meal packages',
@@ -65,100 +58,139 @@ const services = [
     ],
   },
 ]
+// ──────────────────────────────────────────────────────────
 
-export default function Services() {
-  const [heroRef, heroInView] = useInView()
-  const [servicesRef, servicesInView] = useInView()
+function useInView() {
+  const ref = useRef(null)
+  const [inView, setInView] = useState(false)
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([e]) => {
+        if (e.isIntersecting) setInView(true)
+      },
+      { threshold: 0.1 },
+    )
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [])
+  return [ref, inView]
+}
+
+function ServiceRow({ service, index }) {
+  const [ref, inView] = useInView()
+  const even = index % 2 === 0
 
   return (
-    <div className='bg-[#FAFAF8]'>
-      {/* Hero */}
-      <section className='bg-[#6B0F1A] py-24 px-4 text-center'>
-        <p className='uppercase tracking-widest text-[#F5E6C8]/60 text-sm mb-4'>
-          What We Offer
+    <div
+      ref={ref}
+      className={`flex flex-col ${even ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12 md:gap-20 py-24 border-b border-[#6B0F1A]/10 transition-all duration-700 ${
+        inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+      }`}
+    >
+      {/* Image */}
+      <div className='flex-1 w-full'>
+        <Image
+          src={service.image}
+          alt={service.title}
+          width={600}
+          height={450}
+          className='rounded-2xl object-cover w-full h-[380px] md:h-[440px]'
+        />
+      </div>
+
+      {/* Text */}
+      <div className='flex-1'>
+        <div className='flex items-center gap-4 mb-6'>
+          <span className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/30'>
+            {service.number}
+          </span>
+          <div className='h-px flex-1 bg-[#6B0F1A]/10 max-w-[40px]' />
+          <span className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/30'>
+            {service.tag}
+          </span>
+        </div>
+
+        <h2 className='text-3xl md:text-4xl font-light text-[#1a0408] mb-6 leading-snug tracking-tight'>
+          <em style={{ fontFamily: 'Georgia, serif' }}>{service.title}</em>
+        </h2>
+
+        <p className='text-sm text-[#6B0F1A]/60 leading-relaxed mb-8'>
+          {service.desc}
         </p>
-        <h1 className='text-4xl md:text-6xl font-bold text-white mb-6'>
-          Our Services
+
+        <ul className='flex flex-col gap-3 mb-10'>
+          {service.features.map((f, i) => (
+            <li key={i} className='flex items-center gap-3'>
+              <svg
+                viewBox='0 0 16 16'
+                fill='none'
+                stroke='#6B0F1A'
+                strokeWidth='1.5'
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                className='w-4 h-4 flex-shrink-0 opacity-60'
+              >
+                <path d='M3 8l3.5 3.5L13 4' />
+              </svg>
+              <span className='text-sm text-[#6B0F1A]/60'>{f}</span>
+            </li>
+          ))}
+        </ul>
+
+        <Link
+          href='/contact'
+          className='inline-flex items-center gap-2 text-sm text-[#6B0F1A] font-medium border-b border-[#6B0F1A]/30 pb-0.5 hover:border-[#6B0F1A] transition-colors'
+        >
+          Get a quote →
+        </Link>
+      </div>
+    </div>
+  )
+}
+
+export default function Services() {
+  return (
+    <div className='bg-[#FAFAF8] pt-20'>
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <section className='px-6 md:px-16 py-24 border-b border-[#6B0F1A]/10'>
+        <p className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/40 mb-5'>
+          What we offer
+        </p>
+        <h1 className='text-4xl md:text-6xl font-light text-[#1a0408] leading-tight tracking-tight max-w-xl'>
+          Our <em style={{ fontFamily: 'Georgia, serif' }}>services.</em>
         </h1>
-        <p className='text-[#F5E6C8]/80 text-xl max-w-2xl mx-auto'>
+        <p className='text-base text-[#6B0F1A]/50 mt-6 max-w-xl leading-relaxed'>
           From intimate private dinners to large corporate events — we bring
           passion and professionalism to every occasion.
         </p>
       </section>
 
-      {/* Services List */}
-      <section ref={servicesRef} className='py-24 px-4'>
-        <div className='max-w-6xl mx-auto flex flex-col gap-24'>
-          {services.map((service, i) => (
-            <div
-              key={i}
-              className={`flex flex-col ${
-                i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
-              } items-center gap-16 transition-all duration-700 ${
-                servicesInView
-                  ? 'opacity-100 translate-y-0'
-                  : 'opacity-0 translate-y-8'
-              }`}
-            >
-              <div className='flex-1'>
-                <Image
-                  src={service.img}
-                  alt={service.title}
-                  width={600}
-                  height={450}
-                  className='rounded-3xl shadow-2xl object-cover w-full h-[400px]'
-                />
-              </div>
-              <div className='flex-1'>
-                <p className='uppercase tracking-widest text-[#6B0F1A]/60 text-sm mb-3'>
-                  0{i + 1}
-                </p>
-                <h2 className='text-3xl md:text-4xl font-bold text-[#6B0F1A] mb-6'>
-                  {service.title}
-                </h2>
-                <p className='text-gray-600 text-lg leading-relaxed mb-8'>
-                  {service.desc}
-                </p>
-                <ul className='flex flex-col gap-3 mb-10'>
-                  {service.features.map((f, j) => (
-                    <li
-                      key={j}
-                      className='flex items-center gap-3 text-gray-700'
-                    >
-                      <span className='w-6 h-6 rounded-full bg-[#6B0F1A] text-[#F5E6C8] flex items-center justify-center text-xs'>
-                        ✓
-                      </span>
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-                <Link
-                  href='/contact'
-                  className='bg-[#6B0F1A] text-[#F5E6C8] font-bold px-8 py-4 rounded-full hover:bg-[#8B1A2A] transition inline-block'
-                >
-                  Get a Quote
-                </Link>
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* ── Services list ────────────────────────────────── */}
+      <section className='px-6 md:px-16'>
+        {SERVICES.map((service, i) => (
+          <ServiceRow key={i} service={service} index={i} />
+        ))}
       </section>
 
-      {/* CTA */}
-      <section className='bg-[#6B0F1A] py-24 px-4 text-center'>
-        <div className='max-w-3xl mx-auto'>
-          <h2 className='text-3xl md:text-5xl font-bold text-white mb-6'>
-            Ready to Get Started?
+      {/* ── CTA ──────────────────────────────────────────── */}
+      <section className='px-6 md:px-16 py-24 bg-[#6B0F1A]'>
+        <div className='max-w-2xl'>
+          <p className='text-[11px] uppercase tracking-[0.2em] text-[#F5E6C8]/40 mb-6'>
+            Get started
+          </p>
+          <h2 className='text-4xl md:text-5xl font-light text-white leading-tight mb-6 tracking-tight'>
+            Ready to{' '}
+            <em style={{ fontFamily: 'Georgia, serif' }}>get started?</em>
           </h2>
-          <p className='text-[#F5E6C8]/80 text-xl mb-10'>
+          <p className='text-[#F5E6C8]/60 text-sm leading-relaxed mb-10 max-w-md'>
             Contact us today for a free consultation. We'd love to be part of
-            your next event!
+            your next event.
           </p>
           <Link
             href='/contact'
-            className='bg-[#F5E6C8] text-[#6B0F1A] font-bold px-12 py-5 rounded-full hover:bg-white transition text-xl inline-block'
+            className='bg-[#F5E6C8] text-[#6B0F1A] text-sm font-medium px-10 py-4 rounded-full hover:bg-white transition-colors inline-block'
           >
-            Get a Free Quote
+            Get a free quote
           </Link>
         </div>
       </section>

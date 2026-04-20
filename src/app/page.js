@@ -3,23 +3,118 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useEffect, useRef, useState } from 'react'
 
-function useInView() {
-  const ref = useRef(null)
-  const [inView, setInView] = useState(false)
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) setInView(true)
-      },
-      { threshold: 0.15 },
-    )
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [])
-  return [ref, inView]
+// ============================================================
+//  EASY EDIT ZONE — swap text, images, prices, testimonials
+// ============================================================
+
+const HERO = {
+  location: 'Milton, Ontario',
+  heading: ['Catering that leaves a', 'lasting impression.'],
+  subheading:
+    'Premium catering for weddings, corporate events, and special occasions across Milton and the GTA.',
+  image: '/hero.jpg',
 }
 
-const testimonials = [
+const STATS = [
+  { number: '500+', label: 'Events catered' },
+  { number: '5+', label: 'Years experience' },
+  { number: '98%', label: 'Happy clients' },
+  { number: '4.9', label: 'Average rating' },
+]
+
+const PHILOSOPHY = {
+  quote:
+    '"Every event deserves a meal worth remembering. We don\'t do shortcuts, templates, or rushed prep."',
+  author: '— Mystery Meals',
+}
+
+const WHY_US = [
+  {
+    title: 'Fresh ingredients',
+    desc: 'Locally sourced, prepared the day of your event. No shortcuts, no compromises.',
+    // SVG path for icon
+    icon: (
+      <svg
+        viewBox='0 0 32 32'
+        fill='none'
+        stroke='currentColor'
+        strokeWidth='1.5'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        className='w-7 h-7 text-[#6B0F1A]'
+      >
+        <path d='M16 28V16M16 16C16 10 8 6 8 6s0 8 8 10zM16 16c0-6 8-10 8-10s0 8-8 10z' />
+      </svg>
+    ),
+  },
+  {
+    title: 'Expert chefs',
+    desc: 'Years of experience and a genuine passion for food in every dish we prepare.',
+    icon: (
+      <svg
+        viewBox='0 0 32 32'
+        fill='none'
+        stroke='currentColor'
+        strokeWidth='1.5'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        className='w-7 h-7 text-[#6B0F1A]'
+      >
+        <path d='M10 14H22M10 18H18M8 24h16a2 2 0 002-2V10a6 6 0 00-12 0 6 6 0 00-8 0v12a2 2 0 002 2z' />
+      </svg>
+    ),
+  },
+  {
+    title: 'Reliable service',
+    desc: 'From setup to cleanup, we handle everything so you can enjoy your event.',
+    icon: (
+      <svg
+        viewBox='0 0 32 32'
+        fill='none'
+        stroke='currentColor'
+        strokeWidth='1.5'
+        strokeLinecap='round'
+        strokeLinejoin='round'
+        className='w-7 h-7 text-[#6B0F1A]'
+      >
+        <path d='M6 16l7 7L26 9' />
+      </svg>
+    ),
+  },
+]
+
+const CHEF = {
+  image: '/chef.jpg', // swap image here
+  years: '5+',
+  tag: 'Our Story',
+  heading: 'Passion for food,\ndedication to excellence.',
+  paragraphs: [
+    'At Mystery Meals, we believe every meal tells a story. Our team of professional chefs brings years of experience and a love for food to every event we cater.',
+    'Based in Milton, Ontario, we are proud to serve our community with fresh, delicious, and beautifully presented meals for any occasion.',
+  ],
+  cta: { label: 'Learn more about us', href: '/about' },
+}
+
+const SERVICES = [
+  {
+    tag: 'Weddings & Events',
+    title: 'Wedding catering',
+    desc: 'Make your special day unforgettable with elegant, customised menus designed around you.',
+    price: 'From $45 / person',
+    image: '/event.jpg', // swap image here
+    href: '/services',
+  },
+  {
+    tag: 'Corporate',
+    title: 'Corporate events',
+    desc: 'Impress clients and teams with professional, sophisticated catering built around your schedule.',
+    price: 'From $35 / person',
+    image: '/corporate.jpg', // swap image here
+    href: '/services',
+  },
+]
+
+const TESTIMONIALS = [
   {
     name: 'Sarah M.',
     text: 'Mystery Meals made our wedding absolutely perfect. The food was incredible and the service was flawless!',
@@ -46,379 +141,435 @@ const testimonials = [
   },
 ]
 
+const MENU = {
+  tag: 'Food',
+  heading: 'Explore our menu.',
+  paragraphs: [
+    'From elegant plated dinners to casual buffets, our menu is designed to delight every palate with customisable options for any dietary need.',
+    'All dishes are prepared fresh on the day of your event using seasonal, locally sourced ingredients.',
+  ],
+  cta: { label: 'View full menu', href: '/menu' },
+  image: '/menu.jpg', // swap image here
+}
+
+const CTA = {
+  heading: 'Ready to plan\nyour next event?',
+  sub: 'Contact us today for a free consultation and quote. Serving Milton, Ontario and surrounding areas.',
+  cta: { label: 'Get a free quote', href: '/contact' },
+  image: '/event.jpg', // swap image here
+}
+
+// ============================================================
+//  Helpers
+// ============================================================
+
+function useInView(threshold = 0.15) {
+  const ref = useRef(null)
+  const [inView, setInView] = useState(false)
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) setInView(true)
+      },
+      { threshold },
+    )
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [])
+  return [ref, inView]
+}
+
+const fade = (inView, delay = 0) =>
+  `transition-all duration-700 ${delay ? `delay-${delay}` : ''} ${
+    inView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+  }`
+
+const slideLeft = (inView, delay = 0) =>
+  `transition-all duration-700 ${delay ? `delay-${delay}` : ''} ${
+    inView ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-10'
+  }`
+
+const slideRight = (inView, delay = 0) =>
+  `transition-all duration-700 ${delay ? `delay-${delay}` : ''} ${
+    inView ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
+  }`
+
+// ============================================================
+//  Page
+// ============================================================
+
 export default function Home() {
   const [statsRef, statsInView] = useInView()
+  const [quoteRef, quoteInView] = useInView()
   const [whyRef, whyInView] = useInView()
   const [chefRef, chefInView] = useInView()
-  const [servicesRef, servicesInView] = useInView()
+  const [svcRef, svcInView] = useInView()
   const [menuRef, menuInView] = useInView()
 
   return (
     <div className='bg-[#FAFAF8] overflow-x-hidden'>
-      {/* Hero Section */}
-      <section className='relative h-screen flex items-center justify-center'>
+      {/* ── Hero ─────────────────────────────────────────── */}
+      <section className='relative min-h-screen flex items-end pb-20 md:pb-28'>
         <Image
-          src='/hero.jpg'
+          src={HERO.image}
           alt='Hero'
           fill
           className='object-cover'
           priority
         />
-        <div className='absolute inset-0 bg-gradient-to-b from-[#6B0F1A]/80 via-[#6B0F1A]/60 to-[#6B0F1A]/80' />
-        <div className='relative z-10 text-center text-[#F5E6C8] px-4 max-w-5xl mx-auto'>
-          <p className='uppercase tracking-[0.3em] text-[#F5E6C8]/70 text-sm mb-4'>
-            Milton, Ontario
+        <div className='absolute inset-0 bg-gradient-to-t from-[#1a0408]/90 via-[#6B0F1A]/50 to-[#6B0F1A]/30' />
+
+        <div className='relative z-10 px-6 md:px-16 max-w-5xl'>
+          <p className='text-[11px] uppercase tracking-[0.25em] text-[#F5E6C8]/50 mb-6'>
+            {HERO.location}
           </p>
-          <h1 className='text-5xl md:text-7xl font-bold text-white mb-6 leading-tight'>
-            Catering That Leaves a <br />
-            <span className='text-[#F5E6C8] italic'>Lasting Impression</span>
+          <h1 className='text-5xl md:text-7xl font-light text-white leading-[1.05] mb-8 tracking-tight'>
+            {HERO.heading[0]}
+            <br />
+            <em
+              className='font-normal italic'
+              style={{ fontFamily: 'Georgia, serif' }}
+            >
+              {HERO.heading[1]}
+            </em>
           </h1>
-          <p className='text-lg md:text-xl mb-10 text-[#F5E6C8]/80 max-w-2xl mx-auto'>
-            Premium catering for weddings, corporate events, and special
-            occasions across Milton and the GTA.
+          <p className='text-[#F5E6C8]/70 text-lg max-w-xl mb-10 leading-relaxed'>
+            {HERO.subheading}
           </p>
-          <div className='flex flex-col sm:flex-row gap-4 justify-center'>
+          <div className='flex flex-col sm:flex-row gap-4'>
             <Link
               href='/contact'
-              className='bg-[#F5E6C8] text-[#6B0F1A] font-bold px-10 py-4 rounded-full hover:bg-white transition text-center text-lg'
+              className='bg-[#F5E6C8] text-[#6B0F1A] text-sm font-medium px-8 py-4 rounded-full hover:bg-white transition-colors text-center'
             >
-              Get a Free Quote
+              Get a free quote
             </Link>
             <Link
               href='/services'
-              className='border-2 border-[#F5E6C8] text-[#F5E6C8] font-bold px-10 py-4 rounded-full hover:bg-[#F5E6C8] hover:text-[#6B0F1A] transition text-center text-lg'
+              className='border border-[#F5E6C8]/40 text-[#F5E6C8] text-sm font-medium px-8 py-4 rounded-full hover:border-[#F5E6C8]/80 transition-colors text-center'
             >
-              Our Services
+              Our services
             </Link>
           </div>
         </div>
-        {/* Scroll indicator */}
-        <div className='absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-[#F5E6C8]/60'>
-          <span className='text-xs uppercase tracking-widest'>Scroll</span>
-          <div className='w-px h-10 bg-[#F5E6C8]/40 animate-pulse' />
+
+        {/* scroll indicator */}
+        <div className='absolute bottom-8 right-8 md:right-16 flex flex-col items-center gap-2 text-[#F5E6C8]/40'>
+          <span
+            className='text-[10px] uppercase tracking-widest'
+            style={{ writingMode: 'vertical-rl' }}
+          >
+            Scroll
+          </span>
+          <div className='w-px h-12 bg-[#F5E6C8]/30 animate-pulse' />
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section ref={statsRef} className='bg-[#6B0F1A] py-16 px-4'>
-        <div className='max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center'>
-          {[
-            { number: '500+', label: 'Events Catered' },
-            { number: '5+', label: 'Years Experience' },
-            { number: '98%', label: 'Happy Clients' },
-            { number: '4.9★', label: 'Average Rating' },
-          ].map((stat, i) => (
-            <div
-              key={i}
-              className={`transition-all duration-700 delay-${i * 100} ${
-                statsInView
-                  ? 'opacity-100 translate-y-0'
-                  : 'opacity-0 translate-y-8'
-              }`}
-            >
-              <div className='text-4xl md:text-5xl font-bold text-white mb-2'>
-                {stat.number}
+      {/* ── Stats ────────────────────────────────────────── */}
+      <section ref={statsRef} className='border-b border-[#6B0F1A]/10'>
+        <div className='grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-[#6B0F1A]/10'>
+          {STATS.map((s, i) => (
+            <div key={i} className={`px-8 py-12 ${fade(statsInView, i * 100)}`}>
+              <div className='text-4xl font-light text-[#6B0F1A] mb-2 tracking-tight'>
+                {s.number}
               </div>
-              <div className='text-[#F5E6C8]/70 uppercase tracking-widest text-sm'>
-                {stat.label}
+              <div className='text-[11px] uppercase tracking-[0.15em] text-[#6B0F1A]/40'>
+                {s.label}
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Why Choose Us */}
-      <section ref={whyRef} className='py-24 px-4'>
-        <div className='max-w-6xl mx-auto'>
-          <div
-            className={`text-center mb-16 transition-all duration-700 ${
-              whyInView
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-8'
-            }`}
-          >
-            <p className='uppercase tracking-widest text-[#6B0F1A]/60 text-sm mb-3'>
-              Why Us
+      {/* ── Philosophy / Quote ───────────────────────────── */}
+      <section
+        ref={quoteRef}
+        className='px-6 md:px-16 py-24 border-b border-[#6B0F1A]/10'
+      >
+        <div className={`max-w-2xl ${fade(quoteInView)}`}>
+          <p className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/40 mb-8'>
+            Our philosophy
+          </p>
+          <blockquote className='border-l-2 border-[#6B0F1A] pl-8'>
+            <p
+              className='text-2xl md:text-3xl font-light leading-relaxed text-[#1a0408] mb-6'
+              style={{ fontFamily: 'Georgia, serif', fontStyle: 'italic' }}
+            >
+              {PHILOSOPHY.quote}
             </p>
-            <h2 className='text-3xl md:text-5xl font-bold text-[#6B0F1A]'>
-              The Mystery Meals Difference
-            </h2>
-          </div>
-          <div className='grid grid-cols-1 md:grid-cols-3 gap-8'>
-            {[
-              {
-                icon: '🍽️',
-                title: 'Fresh Ingredients',
-                desc: 'We use only the freshest locally sourced ingredients to create memorable meals for every occasion.',
-              },
-              {
-                icon: '👨‍🍳',
-                title: 'Expert Chefs',
-                desc: 'Our team of experienced chefs brings creativity and skill to every dish we prepare.',
-              },
-              {
-                icon: '✅',
-                title: 'Reliable Service',
-                desc: 'From setup to cleanup, we handle everything so you can enjoy your event stress-free.',
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className={`bg-white rounded-3xl p-10 shadow-md text-center hover:shadow-xl transition-all duration-700 delay-${
-                  i * 150
-                } ${
-                  whyInView
-                    ? 'opacity-100 translate-y-0'
-                    : 'opacity-0 translate-y-8'
-                }`}
-              >
-                <div className='text-6xl mb-6'>{item.icon}</div>
-                <h3 className='text-xl font-bold text-[#6B0F1A] mb-4'>
-                  {item.title}
-                </h3>
-                <p className='text-gray-500 leading-relaxed'>{item.desc}</p>
-              </div>
-            ))}
-          </div>
+            <cite className='text-[11px] uppercase tracking-[0.15em] text-[#6B0F1A]/40 not-italic'>
+              {PHILOSOPHY.author}
+            </cite>
+          </blockquote>
         </div>
       </section>
 
-      {/* Chef/About Section */}
-      <section ref={chefRef} className='py-24 px-4 bg-[#6B0F1A]/5'>
+      {/* ── Why Us ───────────────────────────────────────── */}
+      <section
+        ref={whyRef}
+        className='px-6 md:px-16 py-24 border-b border-[#6B0F1A]/10'
+      >
+        <div className={`mb-14 ${fade(whyInView)}`}>
+          <p className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/40 mb-4'>
+            Why us
+          </p>
+          <h2 className='text-3xl md:text-4xl font-light text-[#1a0408] tracking-tight'>
+            The Mystery Meals
+            <br />
+            <em style={{ fontFamily: 'Georgia, serif' }}>difference.</em>
+          </h2>
+        </div>
+        <div className='grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-[#6B0F1A]/10 border border-[#6B0F1A]/10 rounded-2xl overflow-hidden'>
+          {WHY_US.map((item, i) => (
+            <div key={i} className={`p-10 ${fade(whyInView, i * 150)}`}>
+              <div className='mb-6'>{item.icon}</div>
+              <h3 className='text-base font-medium text-[#1a0408] mb-3'>
+                {item.title}
+              </h3>
+              <p className='text-sm text-[#6B0F1A]/60 leading-relaxed'>
+                {item.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Chef / About ─────────────────────────────────── */}
+      <section
+        ref={chefRef}
+        className='px-6 md:px-16 py-24 border-b border-[#6B0F1A]/10'
+      >
         <div className='max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16'>
-          <div
-            className={`flex-1 transition-all duration-700 ${
-              chefInView
-                ? 'opacity-100 translate-x-0'
-                : 'opacity-0 -translate-x-12'
-            }`}
-          >
+          <div className={`flex-1 ${slideLeft(chefInView)}`}>
             <div className='relative'>
               <Image
-                src='/chef.jpg'
+                src={CHEF.image}
                 alt='Our Chef'
                 width={500}
                 height={600}
-                className='rounded-3xl shadow-2xl object-cover w-full h-[500px]'
+                className='rounded-2xl object-cover w-full h-[520px]'
               />
-              <div className='absolute -bottom-6 -right-6 bg-[#6B0F1A] text-[#F5E6C8] rounded-2xl p-6 shadow-xl'>
-                <div className='text-3xl font-bold'>5+</div>
-                <div className='text-sm text-[#F5E6C8]/70'>
-                  Years of Excellence
+              <div className='absolute -bottom-5 -right-5 bg-[#6B0F1A] text-[#F5E6C8] rounded-xl px-6 py-5 shadow-xl'>
+                <div className='text-3xl font-light'>{CHEF.years}</div>
+                <div className='text-[10px] uppercase tracking-widest text-[#F5E6C8]/60 mt-1'>
+                  Years of excellence
                 </div>
               </div>
             </div>
           </div>
-          <div
-            className={`flex-1 transition-all duration-700 delay-200 ${
-              chefInView
-                ? 'opacity-100 translate-x-0'
-                : 'opacity-0 translate-x-12'
-            }`}
-          >
-            <p className='uppercase tracking-widest text-[#6B0F1A]/60 text-sm mb-4'>
-              Our Story
+          <div className={`flex-1 ${slideRight(chefInView, 200)}`}>
+            <p className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/40 mb-5'>
+              {CHEF.tag}
             </p>
-            <h2 className='text-3xl md:text-5xl font-bold text-[#6B0F1A] mb-8 leading-tight'>
-              Passion for Food, Dedication to Excellence
-            </h2>
-            <p className='text-gray-600 mb-6 text-lg leading-relaxed'>
-              At Mystery Meals, we believe every meal tells a story. Our team of
-              professional chefs brings years of experience and a love for food
-              to every event we cater.
-            </p>
-            <p className='text-gray-600 mb-10 text-lg leading-relaxed'>
-              Based in Milton, Ontario, we are proud to serve our community with
-              fresh, delicious, and beautifully presented meals for any
-              occasion.
-            </p>
-            <Link
-              href='/about'
-              className='bg-[#6B0F1A] text-[#F5E6C8] font-bold px-8 py-4 rounded-full hover:bg-[#8B1A2A] transition inline-block'
+            <h2
+              className='text-3xl md:text-4xl font-light text-[#1a0408] leading-snug mb-8 tracking-tight'
+              style={{ whiteSpace: 'pre-line' }}
             >
-              Learn More About Us
+              {CHEF.heading.split('\n')[0]}
+              <br />
+              <em style={{ fontFamily: 'Georgia, serif' }}>
+                {CHEF.heading.split('\n')[1]}
+              </em>
+            </h2>
+            {CHEF.paragraphs.map((p, i) => (
+              <p
+                key={i}
+                className='text-sm text-[#6B0F1A]/60 leading-relaxed mb-5'
+              >
+                {p}
+              </p>
+            ))}
+            <Link
+              href={CHEF.cta.href}
+              className='inline-flex items-center gap-2 text-sm text-[#6B0F1A] font-medium border-b border-[#6B0F1A]/30 pb-0.5 hover:border-[#6B0F1A] transition-colors mt-2'
+            >
+              {CHEF.cta.label} →
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Services Section */}
-      <section ref={servicesRef} className='py-24 px-4'>
-        <div className='max-w-6xl mx-auto'>
-          <div
-            className={`text-center mb-16 transition-all duration-700 ${
-              servicesInView
-                ? 'opacity-100 translate-y-0'
-                : 'opacity-0 translate-y-8'
-            }`}
-          >
-            <p className='uppercase tracking-widest text-[#6B0F1A]/60 text-sm mb-3'>
-              What We Do
+      {/* ── Services ─────────────────────────────────────── */}
+      <section
+        ref={svcRef}
+        className='px-6 md:px-16 py-24 border-b border-[#6B0F1A]/10'
+      >
+        <div
+          className={`flex items-end justify-between mb-14 ${fade(svcInView)}`}
+        >
+          <div>
+            <p className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/40 mb-4'>
+              What we do
             </p>
-            <h2 className='text-3xl md:text-5xl font-bold text-[#6B0F1A]'>
-              Our Services
+            <h2 className='text-3xl md:text-4xl font-light text-[#1a0408] tracking-tight'>
+              Our <em style={{ fontFamily: 'Georgia, serif' }}>services.</em>
             </h2>
           </div>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
-            {[
-              {
-                img: '/event.jpg',
-                title: 'Weddings & Events',
-                desc: 'Make your special day unforgettable with our elegant wedding catering services.',
-              },
-              {
-                img: '/corporate.jpg',
-                title: 'Corporate Events',
-                desc: 'Impress your clients and team with professional, sophisticated catering.',
-              },
-            ].map((item, i) => (
-              <div
-                key={i}
-                className={`relative rounded-3xl overflow-hidden shadow-lg h-80 group transition-all duration-700 delay-${
-                  i * 200
-                } ${
-                  servicesInView
-                    ? 'opacity-100 translate-y-0'
-                    : 'opacity-0 translate-y-8'
-                }`}
-              >
-                <Image
-                  src={item.img}
-                  alt={item.title}
-                  fill
-                  className='object-cover group-hover:scale-110 transition duration-700'
-                />
-                <div className='absolute inset-0 bg-gradient-to-t from-[#6B0F1A]/90 via-[#6B0F1A]/40 to-transparent' />
-                <div className='absolute bottom-0 left-0 p-8 text-[#F5E6C8]'>
-                  <h3 className='text-2xl font-bold text-white mb-2'>
-                    {item.title}
+          <Link
+            href='/services'
+            className='text-sm text-[#6B0F1A]/50 hover:text-[#6B0F1A] transition-colors hidden md:block'
+          >
+            View all services →
+          </Link>
+        </div>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          {SERVICES.map((svc, i) => (
+            <div
+              key={i}
+              className={`group relative rounded-2xl overflow-hidden h-80 ${fade(svcInView, i * 200)}`}
+            >
+              <Image
+                src={svc.image}
+                alt={svc.title}
+                fill
+                className='object-cover group-hover:scale-105 transition-transform duration-700'
+              />
+              <div className='absolute inset-0 bg-gradient-to-t from-[#1a0408]/85 via-[#1a0408]/30 to-transparent' />
+              <div className='absolute inset-0 p-8 flex flex-col justify-between'>
+                <span className='text-[10px] uppercase tracking-[0.2em] text-[#F5E6C8]/50'>
+                  {svc.tag}
+                </span>
+                <div>
+                  <h3 className='text-xl font-light text-white mb-1'>
+                    {svc.title}
                   </h3>
-                  <p className='text-[#F5E6C8]/80'>{item.desc}</p>
+                  <p className='text-sm text-[#F5E6C8]/60 mb-4 leading-relaxed'>
+                    {svc.desc}
+                  </p>
+                  <div className='flex items-center justify-between'>
+                    <span className='text-sm text-[#F5E6C8]/50'>
+                      {svc.price}
+                    </span>
+                    <Link
+                      href={svc.href}
+                      className='text-xs text-[#F5E6C8]/70 hover:text-white transition-colors'
+                    >
+                      Learn more →
+                    </Link>
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
-          <div className='text-center mt-12'>
-            <Link
-              href='/services'
-              className='bg-[#6B0F1A] text-[#F5E6C8] font-bold px-10 py-4 rounded-full hover:bg-[#8B1A2A] transition inline-block'
-            >
-              View All Services
-            </Link>
-          </div>
+            </div>
+          ))}
+        </div>
+        <div className='mt-8 md:hidden text-center'>
+          <Link
+            href='/services'
+            className='text-sm text-[#6B0F1A]/60 hover:text-[#6B0F1A] transition-colors'
+          >
+            View all services →
+          </Link>
         </div>
       </section>
 
-      {/* Testimonials Ticker */}
-      <section className='bg-[#6B0F1A]/5 py-20 overflow-hidden'>
-        <div className='text-center mb-12'>
-          <p className='uppercase tracking-widest text-[#6B0F1A]/60 text-sm mb-3'>
+      {/* ── Testimonials ticker ──────────────────────────── */}
+      <section className='py-24 overflow-hidden border-b border-[#6B0F1A]/10'>
+        <div className='px-6 md:px-16 mb-12'>
+          <p className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/40 mb-4'>
             Testimonials
           </p>
-          <h2 className='text-3xl md:text-5xl font-bold text-[#6B0F1A]'>
-            What Our Clients Say
+          <h2 className='text-3xl md:text-4xl font-light text-[#1a0408] tracking-tight'>
+            What our{' '}
+            <em style={{ fontFamily: 'Georgia, serif' }}>clients say.</em>
           </h2>
         </div>
-        <div className='relative'>
-          <div className='flex gap-6 animate-marquee whitespace-nowrap'>
-            {[...testimonials, ...testimonials].map((t, i) => (
-              <div
-                key={i}
-                className='inline-flex flex-col bg-white rounded-3xl p-8 shadow-md min-w-[350px] whitespace-normal'
-              >
-                <p className='text-gray-600 mb-6 leading-relaxed'>"{t.text}"</p>
-                <div className='flex items-center gap-3 mt-auto'>
-                  <div className='w-10 h-10 rounded-full bg-[#6B0F1A] flex items-center justify-center text-[#F5E6C8] font-bold'>
-                    {t.name[0]}
+        <div className='flex gap-5 animate-marquee whitespace-nowrap'>
+          {[...TESTIMONIALS, ...TESTIMONIALS].map((t, i) => (
+            <div
+              key={i}
+              className='inline-flex flex-col bg-white border border-[#6B0F1A]/10 rounded-2xl p-8 min-w-[340px] whitespace-normal'
+            >
+              <p className='text-sm text-[#6B0F1A]/60 leading-relaxed mb-6 flex-1'>
+                "{t.text}"
+              </p>
+              <div className='flex items-center gap-3'>
+                <div className='w-9 h-9 rounded-full bg-[#6B0F1A]/10 flex items-center justify-center text-[#6B0F1A] text-xs font-medium'>
+                  {t.name[0]}
+                </div>
+                <div>
+                  <div className='text-sm font-medium text-[#1a0408]'>
+                    {t.name}
                   </div>
-                  <div>
-                    <div className='font-bold text-[#6B0F1A]'>{t.name}</div>
-                    <div className='text-yellow-400 text-sm'>★★★★★</div>
-                  </div>
+                  <div className='text-yellow-500 text-xs mt-0.5'>★★★★★</div>
                 </div>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Menu Preview */}
-      <section ref={menuRef} className='py-24 px-4'>
+      {/* ── Menu Preview ─────────────────────────────────── */}
+      <section
+        ref={menuRef}
+        className='px-6 md:px-16 py-24 border-b border-[#6B0F1A]/10'
+      >
         <div className='max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16'>
-          <div
-            className={`flex-1 transition-all duration-700 ${
-              menuInView
-                ? 'opacity-100 translate-x-0'
-                : 'opacity-0 -translate-x-12'
-            }`}
-          >
-            <p className='uppercase tracking-widest text-[#6B0F1A]/60 text-sm mb-4'>
-              Food
+          <div className={`flex-1 ${slideLeft(menuInView)}`}>
+            <p className='text-[11px] uppercase tracking-[0.2em] text-[#6B0F1A]/40 mb-5'>
+              {MENU.tag}
             </p>
-            <h2 className='text-3xl md:text-5xl font-bold text-[#6B0F1A] mb-8 leading-tight'>
-              Explore Our Menu
+            <h2 className='text-3xl md:text-4xl font-light text-[#1a0408] leading-snug mb-8 tracking-tight'>
+              <em style={{ fontFamily: 'Georgia, serif' }}>{MENU.heading}</em>
             </h2>
-            <p className='text-gray-600 mb-6 text-lg leading-relaxed'>
-              From elegant plated dinners to casual buffets, our menu is
-              designed to delight every palate with customizable options for any
-              dietary needs.
-            </p>
-            <p className='text-gray-600 mb-10 text-lg leading-relaxed'>
-              All dishes are prepared fresh on the day of your event using
-              seasonal, locally sourced ingredients.
-            </p>
+            {MENU.paragraphs.map((p, i) => (
+              <p
+                key={i}
+                className='text-sm text-[#6B0F1A]/60 leading-relaxed mb-5'
+              >
+                {p}
+              </p>
+            ))}
             <Link
-              href='/menu'
-              className='bg-[#6B0F1A] text-[#F5E6C8] font-bold px-8 py-4 rounded-full hover:bg-[#8B1A2A] transition inline-block'
+              href={MENU.cta.href}
+              className='inline-flex items-center gap-2 text-sm text-[#6B0F1A] font-medium border-b border-[#6B0F1A]/30 pb-0.5 hover:border-[#6B0F1A] transition-colors mt-2'
             >
-              View Full Menu
+              {MENU.cta.label} →
             </Link>
           </div>
-          <div
-            className={`flex-1 transition-all duration-700 delay-200 ${
-              menuInView
-                ? 'opacity-100 translate-x-0'
-                : 'opacity-0 translate-x-12'
-            }`}
-          >
-            <div className='bg-white rounded-3xl shadow-2xl p-4 w-full'>
+          <div className={`flex-1 ${slideRight(menuInView, 200)}`}>
+            <div className='bg-white border border-[#6B0F1A]/10 rounded-2xl p-4 shadow-sm'>
               <Image
-                src='/menu.jpg'
+                src={MENU.image}
                 alt='Our Menu'
                 width={500}
                 height={400}
-                className='rounded-2xl object-contain w-full h-[450px]'
+                className='rounded-xl object-contain w-full h-[460px]'
               />
             </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className='relative py-32 px-4'>
+      {/* ── CTA ──────────────────────────────────────────── */}
+      <section className='relative py-36 px-6 md:px-16'>
         <Image
-          src='/event.jpg'
+          src={CTA.image}
           alt='CTA Background'
           fill
           className='object-cover'
         />
-        <div className='absolute inset-0 bg-[#6B0F1A]/85' />
-        <div className='relative z-10 text-center text-[#F5E6C8] max-w-3xl mx-auto'>
-          <p className='uppercase tracking-widest text-[#F5E6C8]/60 text-sm mb-4'>
-            Get Started
+        <div className='absolute inset-0 bg-[#1a0408]/80' />
+        <div className='relative z-10 max-w-2xl'>
+          <p className='text-[11px] uppercase tracking-[0.2em] text-[#F5E6C8]/40 mb-6'>
+            Get started
           </p>
-          <h2 className='text-4xl md:text-6xl font-bold text-white mb-8 leading-tight'>
-            Ready to Plan Your Next Event?
+          <h2
+            className='text-4xl md:text-6xl font-light text-white leading-tight mb-8 tracking-tight'
+            style={{ whiteSpace: 'pre-line' }}
+          >
+            {CTA.heading.split('\n')[0]}
+            <br />
+            <em style={{ fontFamily: 'Georgia, serif' }}>
+              {CTA.heading.split('\n')[1]}
+            </em>
           </h2>
-          <p className='text-[#F5E6C8]/80 mb-10 text-xl leading-relaxed'>
-            Contact us today for a free consultation and quote. Serving Milton,
-            Ontario and surrounding areas.
+          <p className='text-[#F5E6C8]/60 text-base mb-10 leading-relaxed max-w-md'>
+            {CTA.sub}
           </p>
           <Link
-            href='/contact'
-            className='bg-[#F5E6C8] text-[#6B0F1A] font-bold px-12 py-5 rounded-full hover:bg-white transition text-xl inline-block'
+            href={CTA.cta.href}
+            className='bg-[#F5E6C8] text-[#6B0F1A] text-sm font-medium px-10 py-4 rounded-full hover:bg-white transition-colors inline-block'
           >
-            Get a Free Quote
+            {CTA.cta.label}
           </Link>
         </div>
       </section>
