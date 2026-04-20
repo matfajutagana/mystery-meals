@@ -56,8 +56,8 @@ export default function Footer() {
           <h3 className='font-bold text-white mb-4 text-lg'>Contact Us</h3>
           <ul className='flex flex-col gap-2 text-sm'>
             <li>📍 Milton, Ontario, Canada</li>
-            <li>📞 (905) 123-4567</li>
-            <li>✉️ info@mysterymeals.ca</li>
+            <li>📞 (647) 540-2235</li>
+            <li>✉️ mysterymeals.outlook.com</li>
           </ul>
         </div>
       </div>

@@ -11,7 +11,7 @@ function useInView() {
       ([entry]) => {
         if (entry.isIntersecting) setInView(true)
       },
-      { threshold: 0.15 }
+      { threshold: 0.15 },
     )
     if (ref.current) observer.observe(ref.current)
     return () => observer.disconnect()
@@ -381,13 +381,15 @@ export default function Home() {
                 : 'opacity-0 translate-x-12'
             }`}
           >
-            <Image
-              src='/menu.jpg'
-              alt='Our Menu'
-              width={500}
-              height={400}
-              className='rounded-3xl shadow-2xl object-cover w-full h-[450px]'
-            />
+            <div className='bg-white rounded-3xl shadow-2xl p-4 w-full'>
+              <Image
+                src='/menu.jpg'
+                alt='Our Menu'
+                width={500}
+                height={400}
+                className='rounded-2xl object-contain w-full h-[450px]'
+              />
+            </div>
           </div>
         </div>
       </section>
