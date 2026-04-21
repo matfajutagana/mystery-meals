@@ -30,7 +30,7 @@ const SERVICES = [
     price: 'Custom pricing',
   },
   {
-    image: '/menu.jpg', // 📸 swap image
+    image: '/menu.jpg', // 📸 swap image — ideally a food/meal prep photo
     number: '04',
     tag: 'Meal Prep',
     title: 'Weekly meal prep.',
@@ -46,10 +46,11 @@ export default function Services() {
     <section
       id='services'
       ref={ref}
-      className='px-6 md:px-16 py-28'
+      className='px-6 md:px-16 py-20'
       style={{ background: '#140308', ...DB }}
     >
-      <div className='mb-12'>
+      {/* Header */}
+      <div className='mb-8'>
         <p className={`${LD} mb-4 ${fade(inView, 0)}`}>What we offer</p>
         <h2
           className={`text-3xl md:text-4xl font-light text-white tracking-tight ${fade(inView, 100)}`}
@@ -58,53 +59,104 @@ export default function Services() {
         </h2>
       </div>
 
-      {/* Horizontal scroll on mobile, grid on desktop */}
+      {/* Cards — horizontal scroll on mobile, 4-col grid on desktop */}
       <div
-        className={`flex md:grid md:grid-cols-4 gap-4 overflow-x-auto md:overflow-x-visible no-scrollbar pb-2 ${fade(inView, 200)}`}
+        className={`flex md:grid md:grid-cols-4 gap-3 md:gap-4 overflow-x-auto md:overflow-x-visible no-scrollbar pb-4 ${fade(inView, 200)}`}
         style={{ WebkitOverflowScrolling: 'touch' }}
       >
         {SERVICES.map((svc, i) => (
           <div
             key={i}
-            className='group relative rounded-2xl overflow-hidden flex-shrink-0 md:flex-shrink cursor-pointer'
-            style={{ width: 'min(280px, 75vw)', height: '420px' }}
+            className='group relative rounded-2xl overflow-hidden flex-shrink-0 md:flex-shrink-0 cursor-pointer'
+            style={{
+              // mobile: show ~1.2 cards at a time for scroll hint
+              // desktop: full height, fills the grid column
+              width: 'min(260px, 70vw)',
+              height: 'clamp(420px, 52vh, 540px)',
+            }}
           >
             <Image
               src={svc.image}
               alt={svc.title}
               fill
-              className='object-cover opacity-70 group-hover:opacity-90 group-hover:scale-105 transition-all duration-700'
+              className='object-cover opacity-75 group-hover:opacity-95 group-hover:scale-105 transition-all duration-700'
             />
-            <div className='absolute inset-0 bg-gradient-to-t from-[#140308]/95 via-[#140308]/25 to-transparent' />
+            {/* Gradient — softer so food shows more */}
+            <div className='absolute inset-0 bg-gradient-to-t from-[#140308]/92 via-[#140308]/15 to-transparent' />
+
             <div className='absolute inset-0 p-6 flex flex-col justify-between'>
+              {/* Top — tag + number */}
               <div className='flex items-center justify-between'>
-                <span className={LD}>{svc.tag}</span>
-                <span className='text-[10px] text-[#F5E6C8]/30'>
+                <span
+                  className='text-[10px] uppercase tracking-[0.18em]'
+                  style={{ color: 'rgba(245,230,200,0.45)' }}
+                >
+                  {svc.tag}
+                </span>
+                <span
+                  className='text-[10px]'
+                  style={{ color: 'rgba(245,230,200,0.25)' }}
+                >
                   {svc.number}
                 </span>
               </div>
+
+              {/* Bottom — title, desc, price */}
               <div>
                 <h3
-                  className='text-lg font-light text-white mb-2'
+                  className='text-lg font-light text-white mb-2 leading-snug'
                   style={serif}
                 >
                   {svc.title}
                 </h3>
-                <p className='text-xs text-[#F5E6C8]/65 mb-3 leading-relaxed'>
+                <p
+                  className='text-xs leading-relaxed mb-4'
+                  style={{ color: 'rgba(245,230,200,0.60)' }}
+                >
                   {svc.desc}
                 </p>
-                <div className='flex items-center justify-between'>
-                  <span className='text-xs text-[#F5E6C8]/50'>{svc.price}</span>
+                <div
+                  className='flex items-center justify-between pt-3'
+                  style={{ borderTop: '1px solid rgba(245,230,200,0.10)' }}
+                >
+                  <span
+                    className='text-xs'
+                    style={{ color: 'rgba(245,230,200,0.45)' }}
+                  >
+                    {svc.price}
+                  </span>
                   <a
                     href='#contact'
-                    className='text-xs text-[#F5E6C8]/60 hover:text-[#F5E6C8] transition-colors'
+                    className='text-xs font-medium transition-colors'
+                    style={{ color: 'rgba(245,230,200,0.55)' }}
+                    onMouseEnter={(e) =>
+                      (e.target.style.color = 'rgba(245,230,200,1)')
+                    }
+                    onMouseLeave={(e) =>
+                      (e.target.style.color = 'rgba(245,230,200,0.55)')
+                    }
                   >
-                    Quote →
+                    Get a quote →
                   </a>
                 </div>
               </div>
             </div>
           </div>
+        ))}
+      </div>
+
+      {/* Mobile — subtle scroll hint text */}
+      <div className='md:hidden flex justify-center items-center gap-2 mt-5'>
+        {SERVICES.map((_, i) => (
+          <div
+            key={i}
+            className='rounded-full'
+            style={{
+              width: '6px',
+              height: '6px',
+              background: 'rgba(245,230,200,0.30)',
+            }}
+          />
         ))}
       </div>
     </section>

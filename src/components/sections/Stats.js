@@ -19,7 +19,7 @@ export default function Stats() {
         {STATS.map((s, i) => (
           <div
             key={i}
-            className={`px-8 py-12 ${fade(inView, i * 80)}`}
+            className={`px-8 py-12 ${fade(inView, i * 120)}`}
             style={{
               borderRight: '1px solid rgba(245,230,200,0.07)',
               borderBottom: i < 2 ? '1px solid rgba(245,230,200,0.07)' : 'none',

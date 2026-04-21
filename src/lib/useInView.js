@@ -11,7 +11,7 @@ export function useInView(threshold = 0.1) {
       },
       {
         threshold,
-        rootMargin: '0px 0px -100px 0px',
+        rootMargin: '0px 0px -120px 0px',
       },
     )
     if (ref.current) obs.observe(ref.current)

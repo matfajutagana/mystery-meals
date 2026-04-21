@@ -10,8 +10,8 @@ const SLIDES = [
   { image: '/hero-3.jpg' },
   { image: '/hero-4.jpg' },
 ]
-const DISPLAY_TIME = 5000
-const FADE_DURATION = 1200
+const DISPLAY_TIME = 4000 // was 5000
+const FADE_DURATION = 1000 // was 1200
 
 export default function Hero() {
   const [current, setCurrent] = useState(0)
@@ -19,10 +19,9 @@ export default function Hero() {
   useEffect(() => {
     const t = setInterval(() => {
       setCurrent((c) => (c + 1) % SLIDES.length)
-    }, DISPLAY_TIME + FADE_DURATION)
+    }, DISPLAY_TIME) // was DISPLAY_TIME + FADE_DURATION
     return () => clearInterval(t)
   }, [])
-
   const goTo = (i) => setCurrent(i)
 
   return (

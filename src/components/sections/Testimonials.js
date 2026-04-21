@@ -41,20 +41,21 @@ const TESTIMONIALS = [
 function Card({ t, style }) {
   return (
     <div
-      className='flex flex-col rounded-2xl p-6 flex-shrink-0'
+      className='flex flex-col flex-shrink-0'
       style={{
-        width: '300px', // fixed width so text wraps properly
-        background:
-          style === 'dim' ? 'rgba(245,230,200,0.04)' : 'rgba(245,230,200,0.06)',
+        width: '280px',
+        padding: '20px 24px',
+        borderRadius: '12px',
+        background: 'transparent',
         border:
           style === 'dim'
-            ? '1px solid rgba(245,230,200,0.06)'
-            : '1px solid rgba(245,230,200,0.09)',
+            ? '1px solid rgba(245,230,200,0.05)'
+            : '1px solid rgba(245,230,200,0.08)',
       }}
     >
       {/* Text wraps naturally inside the fixed-width card */}
       <p
-        className='text-sm leading-relaxed mb-4 flex-1'
+        className='text-xs leading-relaxed mb-3 flex-1'
         style={{
           color:
             style === 'dim'

@@ -26,7 +26,7 @@ export default function About() {
     >
       <div className='max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-16'>
         {/* Photo */}
-        <div className={`flex-1 ${slideL(inView, 0)}`}>
+        <div className={`flex-1 ${fade(inView, 0)}`}>
           <div className='relative'>
             <Image
               src={CHEF.image}

@@ -74,25 +74,54 @@ const tagPill = (tag) =>
     ? 'text-[10px] uppercase tracking-[0.1em] px-2.5 py-0.5 rounded-full bg-green-900/40 text-green-400 border border-green-800/50'
     : 'text-[10px] uppercase tracking-[0.1em] px-2.5 py-0.5 rounded-full border border-[#F5E6C8]/15 text-[#F5E6C8]/40'
 
-export default function Menu() {
+// Each category row has its own observer so it animates as you scroll to it
+function MenuRow({ section }) {
   const [ref, inView] = useInView()
+  return (
+    <div ref={ref} className='py-8' style={DB}>
+      {/* Category label animates first */}
+      <p className={`${LD} mb-4 ${fade(inView, 0)}`}>{section.category}</p>
+      <div className='flex flex-col gap-4'>
+        {section.items.map((item, j) => (
+          // Each item staggers in after the label
+          <div key={j} className={fade(inView, 80 + j * 80)}>
+            <div className='flex items-center gap-3 mb-1 flex-wrap'>
+              <h3 className='text-base font-light text-[#F5E6C8]/90'>
+                {item.name}
+              </h3>
+              {item.tag && (
+                <span className={tagPill(item.tag)}>{item.tag}</span>
+              )}
+            </div>
+            <p className='text-sm text-[#F5E6C8]/55 leading-relaxed'>
+              {item.desc}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export default function Menu() {
+  const [headerRef, headerInView] = useInView()
 
   return (
     <section
       id='menu'
-      ref={ref}
       className='px-6 md:px-16 py-28'
       style={{ background: '#180306', ...DB }}
     >
-      <div className='mb-12'>
-        <p className={`${LD} mb-4 ${fade(inView, 0)}`}>What we serve</p>
+      {/* Header animates once when section enters */}
+      <div ref={headerRef} className='mb-12'>
+        <p className={`${LD} mb-4 ${fade(headerInView, 0)}`}>What we serve</p>
         <h2
-          className={`text-3xl md:text-4xl font-light text-white tracking-tight ${fade(inView, 100)}`}
+          className={`text-3xl md:text-4xl font-light text-white tracking-tight ${fade(headerInView, 100)}`}
         >
           Our <em style={serif}>menu.</em>
         </h2>
         <p
-          className={`text-sm text-[#F5E6C8]/50 mt-4 max-w-lg leading-relaxed ${fade(inView, 180)}`}
+          className={`text-sm text-[#F5E6C8]/50 mt-4 max-w-lg leading-relaxed ${fade(headerInView, 200)}`}
         >
           All menus are fully customisable.{' '}
           <a
@@ -105,32 +134,10 @@ export default function Menu() {
         </p>
       </div>
 
+      {/* Each row animates independently as you scroll */}
       <div className='grid grid-cols-1 md:grid-cols-2 gap-x-16'>
         {MENU.map((section, i) => (
-          <div
-            key={i}
-            className={`py-8 ${fade(inView, 250 + i * 70)}`}
-            style={DB}
-          >
-            <p className={`${LD} mb-4`}>{section.category}</p>
-            <div className='flex flex-col gap-4'>
-              {section.items.map((item, j) => (
-                <div key={j}>
-                  <div className='flex items-center gap-3 mb-1 flex-wrap'>
-                    <h3 className='text-base font-light text-[#F5E6C8]/90'>
-                      {item.name}
-                    </h3>
-                    {item.tag && (
-                      <span className={tagPill(item.tag)}>{item.tag}</span>
-                    )}
-                  </div>
-                  <p className='text-sm text-[#F5E6C8]/55 leading-relaxed'>
-                    {item.desc}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
+          <MenuRow key={i} section={section} />
         ))}
       </div>
     </section>
