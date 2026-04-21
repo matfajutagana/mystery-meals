@@ -69,8 +69,6 @@ export default function Services() {
             key={i}
             className='group relative rounded-2xl overflow-hidden flex-shrink-0 md:flex-shrink-0 cursor-pointer'
             style={{
-              // mobile: show ~1.2 cards at a time for scroll hint
-              // desktop: full height, fills the grid column
               width: 'min(260px, 70vw)',
               height: 'clamp(420px, 52vh, 540px)',
             }}
@@ -79,23 +77,28 @@ export default function Services() {
               src={svc.image}
               alt={svc.title}
               fill
-              className='object-cover opacity-75 group-hover:opacity-95 group-hover:scale-105 transition-all duration-700'
+              className='object-cover opacity-75 group-hover:opacity-90 group-hover:scale-105 transition-all duration-700'
             />
-            {/* Gradient — softer so food shows more */}
-            <div className='absolute inset-0 bg-gradient-to-t from-[#140308]/92 via-[#140308]/15 to-transparent' />
+
+            {/* Gradient */}
+            <div className='absolute inset-0 bg-gradient-to-t from-[#140308] via-[#140308]/50 to-transparent' />
 
             <div className='absolute inset-0 p-6 flex flex-col justify-between'>
-              {/* Top — tag + number */}
+              {/* Top — tag pill + number */}
               <div className='flex items-center justify-between'>
                 <span
-                  className='text-[10px] uppercase tracking-[0.18em]'
-                  style={{ color: 'rgba(245,230,200,0.45)' }}
+                  className='text-[10px] uppercase tracking-[0.18em] px-2 py-1 rounded-md'
+                  style={{
+                    color: 'rgba(245,230,200,0.90)',
+                    background: 'rgba(10,1,3,0.50)',
+                    backdropFilter: 'blur(6px)',
+                  }}
                 >
                   {svc.tag}
                 </span>
                 <span
                   className='text-[10px]'
-                  style={{ color: 'rgba(245,230,200,0.25)' }}
+                  style={{ color: 'rgba(245,230,200,0.30)' }}
                 >
                   {svc.number}
                 </span>
@@ -103,38 +106,30 @@ export default function Services() {
 
               {/* Bottom — title, desc, price */}
               <div>
-                <h3
-                  className='text-lg font-light text-white mb-2 leading-snug'
-                  style={serif}
-                >
+                {/* Inter font — clean and readable on small cards */}
+                <h3 className='text-base font-medium text-white mb-2 leading-snug'>
                   {svc.title}
                 </h3>
                 <p
                   className='text-xs leading-relaxed mb-4'
-                  style={{ color: 'rgba(245,230,200,0.60)' }}
+                  style={{ color: 'rgba(245,230,200,0.80)' }}
                 >
                   {svc.desc}
                 </p>
                 <div
                   className='flex items-center justify-between pt-3'
-                  style={{ borderTop: '1px solid rgba(245,230,200,0.10)' }}
+                  style={{ borderTop: '1px solid rgba(245,230,200,0.12)' }}
                 >
                   <span
                     className='text-xs'
-                    style={{ color: 'rgba(245,230,200,0.45)' }}
+                    style={{ color: 'rgba(245,230,200,0.60)' }}
                   >
                     {svc.price}
                   </span>
                   <a
                     href='#contact'
-                    className='text-xs font-medium transition-colors'
+                    className='text-xs font-medium hover:text-[#F5E6C8] transition-colors'
                     style={{ color: 'rgba(245,230,200,0.55)' }}
-                    onMouseEnter={(e) =>
-                      (e.target.style.color = 'rgba(245,230,200,1)')
-                    }
-                    onMouseLeave={(e) =>
-                      (e.target.style.color = 'rgba(245,230,200,0.55)')
-                    }
                   >
                     Get a quote →
                   </a>
@@ -145,7 +140,7 @@ export default function Services() {
         ))}
       </div>
 
-      {/* Mobile — subtle scroll hint text */}
+      {/* Mobile — dot indicators */}
       <div className='md:hidden flex justify-center items-center gap-2 mt-5'>
         {SERVICES.map((_, i) => (
           <div
