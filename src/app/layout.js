@@ -34,8 +34,7 @@ export const metadata = {
     images: ['https://mysterymeals.ca/hero.jpg'],
   },
   verification: {
-    google:
-      '<meta name="google-site-verification" content="UGmVLzDudd153425ZgWdgjo6W518AsFc2aZ-azKghUQ" />',
+    google: 'UGmVLzDudd153425ZgWdgjo6W518AsFc2aZ-azKghUQ',
   },
 }
 
