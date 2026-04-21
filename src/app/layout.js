@@ -9,6 +9,12 @@ export const metadata = {
   title: 'Mystery Meals - Catering Services in Milton, Ontario',
   description:
     'Premium catering for weddings, corporate events, private chef services and meal prep in Milton, Ontario and the GTA.',
+  keywords:
+    'catering Milton Ontario, wedding catering Milton, corporate catering GTA, halal catering Milton, private chef Milton, meal prep Milton',
+  metadataBase: new URL('https://mysterymeals.ca'),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: 'Mystery Meals - Catering Services in Milton, Ontario',
     description:
@@ -17,7 +23,7 @@ export const metadata = {
     siteName: 'Mystery Meals',
     images: [
       {
-        url: 'https://mysterymeals.ca/hero.jpg',
+        url: 'https://mysterymeals.ca/hero-1.jpg', // updated to hero-1.jpg
         width: 1200,
         height: 630,
         alt: 'Mystery Meals Catering',
@@ -31,7 +37,7 @@ export const metadata = {
     title: 'Mystery Meals - Catering Services in Milton, Ontario',
     description:
       'Premium catering for weddings, corporate events, private chef services and meal prep in Milton, Ontario and the GTA.',
-    images: ['https://mysterymeals.ca/hero.jpg'],
+    images: ['https://mysterymeals.ca/hero-1.jpg'], // updated to hero-1.jpg
   },
   verification: {
     google: 'UGmVLzDudd153425ZgWdgjo6W518AsFc2aZ-azKghUQ',
